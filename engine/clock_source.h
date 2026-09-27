@@ -2,7 +2,7 @@
 #include <chrono>
 #include <optional>
 
-namespace app::engine
+namespace motheye::engine
 {
 	class ClockSource
 	{

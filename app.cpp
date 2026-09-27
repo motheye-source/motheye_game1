@@ -3,7 +3,7 @@
 #include "engine/engine.h"
 #include <motheye/platform/window/win32/resource_ids.h>
 
-using app::engine::Engine;
+using motheye::engine::Engine;
 
 namespace app
 {
@@ -11,12 +11,18 @@ namespace app
     {
         window_ = CreateMainWindow();
    
+        engine_.Start(window_->GetHandle());        
+        game_.Start();
+
         int exitCode = window_->Run(nCmdShow);
+
+        game_.Stop();
+        engine_.Stop();
 
         return exitCode;
     }
 
-    std::unique_ptr<Window<App, Engine>> App::CreateMainWindow()
+    std::unique_ptr<Window> App::CreateMainWindow()
     {
         ResourceIds resourceIds;
         resourceIds.title = IDS_APP_TITLE;
@@ -24,7 +30,7 @@ namespace app
         resourceIds.icon = IDI_SCRIPTENGINE;
         resourceIds.smallIcon = IDI_SMALL;
 
-        return std::make_unique<Window<App, Engine>>(hInstance_, resourceIds, *this, this->engine_);
+        return std::make_unique<Window>(hInstance_, resourceIds, this->engine_);
     }
 
     //void App::OnInputContextChanged(InputContext context)
@@ -43,22 +49,4 @@ namespace app
     //        window_->ShowMouseCursor();
     //    }*/
     //}
-
-    void App::OnSize(unsigned int width, unsigned int height)
-    {
-        //engine_.Resize(width, height);
-    }
-
-    void App::OnLegacyCaptureLost()
-    {
-        //engine_.ReleaseActiveHeldInput();
-    }
-
-    void App::OnFocusLost()
-    {
-      /*  engine_.ReleaseActiveHeldInput();
-
-        window_->SetInputMode(InputMode::Legacy);
-        window_->ShowMouseCursor();*/
-    }
 }

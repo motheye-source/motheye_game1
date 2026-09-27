@@ -1,20 +1,22 @@
 #include "engine.h"
 
-namespace app::engine
+namespace motheye::engine
 {
-     void Engine::OnBeginFrame()
-     {
-     }
+	void Engine::Start(HWND hWnd)
+	{
 
-     void Engine::OnUpdate()
-     {       
-     }
+	}
+	
+	void Engine::Stop()
+	{
 
-     void Engine::OnMouseKeyboardEvent(const MouseKeyboardEvent& event)
-     {
-     }
+	}
 
-     void Engine::OnControllerEvent(const ControllerEvent& event)
-     {
-     }
+	void Engine::OnRunFrame()
+	{       
+		const float deltaSeconds = clock_.Tick();
+
+		// TODO:  forward inputState_ to game to resolve actions
+		//game_.Resolve(inputState_, deltaSeconds);
+	}
 }

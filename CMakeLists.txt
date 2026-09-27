@@ -5,6 +5,9 @@ add_executable(${PROJECT_NAME} WIN32
 
 	"WinMain.cpp"
 
+	"targetver.h"
+	"resource.h"
+	"app.rc"
 	"app.h"
 	"app.cpp"	
 )
@@ -24,10 +27,12 @@ add_subdirectory(deps/googletest)
 add_subdirectory(deps/motheye_platform)
 
 add_subdirectory(engine)
+add_subdirectory(game)
 
 add_dependencies(${PROJECT_NAME} 
 	motheye_platform
 	engine
+	game
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC 
@@ -38,6 +43,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 target_link_libraries(${PROJECT_NAME} PUBLIC 
 	motheye_platform
 	engine
+	game
 )
 
 target_precompile_headers(${PROJECT_NAME} PUBLIC "pch.h")
