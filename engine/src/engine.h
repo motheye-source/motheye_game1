@@ -4,9 +4,17 @@
 #include <motheye/platform/input/mouse_keyboard_event.h>
 #include <motheye/platform/input/controller_event.h>
 
-#include "input/input_state.h"
+#include <motheye/engine/i_engine.h>
+#include <motheye/engine/input/input_state.h>
+#include <motheye/model/model.h>
+
+#include "renderer/renderer.h"
 
 #include "clock_source.h"
+#include "world/world.h"
+
+#include <memory>
+#include <filesystem>
 
 namespace motheye::engine
 {
@@ -14,10 +22,11 @@ namespace motheye::engine
 	using motheye::platform::input::MouseKeyboardEvent;
 	using motheye::platform::input::ControllerEvent;
 
-	class Engine : public IFrameHandler
+	using motheye::model::Model;
+
+	class Engine : public IFrameHandler, public IEngine
 	{
 	public:
-
 		void Start(HWND hWnd);
 		void Stop();
 
@@ -29,10 +38,21 @@ namespace motheye::engine
 
 		void OnResize(unsigned int, unsigned int) override;
 		void OnReleaseInput() override;
-				
+			
+		void LoadWorld(const motheye::model::Model& model, const std::filesystem::path& defaultTexture) override;
+
+	private:
+		void InitRenderer(HWND hWnd);
+		void RenderScene();
+
 	private:
 		ClockSource clock_;
 		input::InputState inputState_;
+		
+		std::unique_ptr<motheye::dx12::DXGIAdapter> adapter_;
+		std::unique_ptr<renderer::Renderer> renderer_;
+
+		std::unique_ptr<world::World> world_;
 	};
 	
 	inline void Engine::OnInitFrame()
@@ -50,8 +70,9 @@ namespace motheye::engine
 		inputState_.ApplyControllerEvent(event);
 	}
 
-	inline void Engine::OnResize(unsigned int, unsigned int)
+	inline void Engine::OnResize(unsigned int width, unsigned int height)
 	{
+		renderer_->Resize(width, height);
 	}
 
 	inline void Engine::OnReleaseInput()

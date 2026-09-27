@@ -45,6 +45,7 @@ add_dependencies(${PROJECT_NAME}
 
 target_include_directories(${PROJECT_NAME} PUBLIC 
 	${CMAKE_SOURCE_DIR}
+	${CMAKE_SOURCE_DIR}/engine/include
 	${CMAKE_SOURCE_DIR}/deps/motheye_platform/include
 	${CMAKE_SOURCE_DIR}/deps/motheye_dx12/include
 	${CMAKE_SOURCE_DIR}/deps/motheye_dx12/deps/DirectXTK12/inc

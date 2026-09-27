@@ -10,7 +10,7 @@
 #include <array>
 #include <vector>
 
-namespace renderer
+namespace motheye::renderer
 {
 	class Frame
 	{

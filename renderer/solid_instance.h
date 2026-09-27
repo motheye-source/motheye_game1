@@ -2,7 +2,7 @@
 #include "instance_base.h"
 #include "resource_handle.h"
 
-namespace renderer
+namespace motheye::renderer
 {
 	class SolidInstance : public InstanceBase
 	{

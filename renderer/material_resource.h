@@ -3,7 +3,7 @@
 #include "resource_handle.h"
 #include "constant_buffer.h"
 
-namespace renderer
+namespace motheye::renderer
 {
 	class MaterialResource
 	{

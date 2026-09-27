@@ -6,7 +6,7 @@
 
 #include <memory>
 
-namespace renderer
+namespace motheye::renderer
 {
 	struct FrameConstant
 	{

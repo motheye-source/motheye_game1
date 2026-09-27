@@ -3,7 +3,7 @@
 #include <motheye/dx12/dx12.h>
 #include <memory>
 
-namespace renderer
+namespace motheye::renderer
 {
 	class TextureResource
 	{

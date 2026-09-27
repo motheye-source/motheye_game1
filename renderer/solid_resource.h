@@ -2,7 +2,7 @@
 #include "framework.h"
 #include "resource_handle.h"
 
-namespace renderer
+namespace motheye::renderer
 {	
 	class SolidResource
 	{

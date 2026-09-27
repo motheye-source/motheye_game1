@@ -13,7 +13,7 @@
 
 #include <type_traits>
 
-namespace renderer
+namespace motheye::renderer
 {
 	class ResourceManager
 	{

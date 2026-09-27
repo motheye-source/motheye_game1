@@ -2,7 +2,7 @@
 #include "framework.h"
 #include <motheye/dx12/dx12.h>
 
-namespace renderer
+namespace motheye::renderer
 {
 	using motheye::dx12::StaticMesh;
 

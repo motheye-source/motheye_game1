@@ -6,7 +6,7 @@ using namespace DirectX;
 using namespace motheye::dx12;
 using Microsoft::WRL::ComPtr;
 
-namespace renderer
+namespace motheye::renderer
 {
     void Renderer::Destroy()
     {

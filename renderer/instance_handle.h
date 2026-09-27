@@ -2,7 +2,7 @@
 #include "instance_kind.h"
 #include <cstdint>
 
-namespace renderer
+namespace motheye::renderer
 {
 	class InstanceHandle
 	{

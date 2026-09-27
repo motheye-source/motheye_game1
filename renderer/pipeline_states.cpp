@@ -5,7 +5,7 @@
 
 using namespace motheye::dx12;
 
-namespace renderer
+namespace motheye::renderer
 {
     void PipelineStates::Initialize(ID3D12Device8* device, ID3D12RootSignature* rootSignature, DXGI_FORMAT dsvFormat)
     {

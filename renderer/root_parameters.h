@@ -3,7 +3,7 @@
 #include <motheye/dx12/dx12.h>
 #include <cassert>
 
-namespace renderer
+namespace motheye::renderer
 {
 	using motheye::dx12::RootSignatureDescription;
 

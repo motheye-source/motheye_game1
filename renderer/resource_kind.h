@@ -1,7 +1,7 @@
 #pragma once
 #include <cstdint>
 
-namespace renderer
+namespace motheye::renderer
 {
 	enum class ResourceKind : uint16_t
 	{

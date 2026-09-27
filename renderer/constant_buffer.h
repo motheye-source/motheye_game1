@@ -6,7 +6,7 @@
 #include <motheye/dx12/dx12.h>
 #include <motheye/dx12/constant_buffer.h>
 
-namespace renderer
+namespace motheye::renderer
 {    
     using namespace Microsoft::WRL;
 

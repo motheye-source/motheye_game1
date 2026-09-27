@@ -4,6 +4,8 @@ project("game")
 add_library(${PROJECT_NAME} STATIC
 	"game.cpp"
 	"game.h"
+
+	"example_model.h"
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
@@ -16,8 +18,10 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC 
-	${CMAKE_SOURCE_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
+	${CMAKE_SOURCE_DIR}
+	${CMAKE_SOURCE_DIR}/engine/include
+	${CMAKE_SOURCE_DIR}/deps/motheye/include
 	${CMAKE_SOURCE_DIR}/deps/motheye_platform/include
 )
 

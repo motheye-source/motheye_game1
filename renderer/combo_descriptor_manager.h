@@ -4,7 +4,7 @@
 
 #include <motheye/dx12/dx12.h>
 
-namespace renderer
+namespace motheye::renderer
 {
     using namespace Microsoft::WRL;
 

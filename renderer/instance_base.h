@@ -2,7 +2,7 @@
 #include "framework.h"
 #include "constant_buffer.h"
 
-namespace renderer
+namespace motheye::renderer
 {
 	class InstanceBase
 	{

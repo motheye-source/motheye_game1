@@ -1,9 +1,9 @@
 #include <gtest/gtest.h>
 #include <resource_handle.h>
 
-using namespace renderer;
+using namespace motheye::renderer;
 
-namespace renderer::test
+namespace motheye::renderer::test
 {
 	class ResourceHandleTest : public ::testing::Test
 	{

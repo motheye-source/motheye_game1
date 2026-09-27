@@ -14,7 +14,7 @@
 
 #include <memory>
 
-namespace renderer
+namespace motheye::renderer
 {
 	class Renderer
 	{

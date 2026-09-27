@@ -2,14 +2,22 @@ cmake_minimum_required(VERSION 3.28)
 project("engine")
 
 add_library(${PROJECT_NAME} STATIC
-	"engine.h"
-	"engine.cpp"
-	"clock_source.h"
+	"include/motheye/engine/input/input_device.h"
+	"include/motheye/engine/input/controller_state.h"
+	"include/motheye/engine/input/mouse_keyboard_state.h"
+	"include/motheye/engine/input/input_state.h"
 
-	"input/input_device.h"
-	"input/controller_state.h"
-	"input/mouse_keyboard_state.h"
-	"input/input_state.h"
+	"src/engine.h"
+	"src/engine.cpp"
+	"src/clock_source.h"
+
+	"src/world/axes_geometry.h"
+	"src/world/resource_map.h"
+	"src/world/world.h"
+	"src/world/world_loader.h"
+	"src/world/world_loader.cpp"
+	"src/world/world_node.h"
+	"src/world/transform.h"
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
@@ -24,6 +32,10 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 target_include_directories(${PROJECT_NAME} PUBLIC 
 	${CMAKE_SOURCE_DIR}
 	${CMAKE_SOURCE_DIR}/engine
+	${CMAKE_SOURCE_DIR}/engine/include
+	${CMAKE_SOURCE_DIR}/deps/motheye/include
+	${CMAKE_SOURCE_DIR}/deps/motheye_dx12/include
+	${CMAKE_SOURCE_DIR}/deps/motheye_dx12/deps/DirectXTK12/inc
 	${CMAKE_SOURCE_DIR}/deps/motheye_platform/include
 )
 

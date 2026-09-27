@@ -2,7 +2,7 @@
 #include "resource_kind.h"
 #include <cstdint>
 
-namespace renderer
+namespace motheye::renderer
 {
 	class ResourceHandle
 	{

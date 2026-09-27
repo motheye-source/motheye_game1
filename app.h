@@ -2,7 +2,7 @@
 #include "pch.h"
 
 #include "game/game.h"
-#include "engine/engine.h"
+#include "engine/src/engine.h"
 #include <motheye/platform/window/win32/window.h>
 
 #include <memory>
@@ -32,7 +32,8 @@ namespace app
 	};
 
 	inline App::App(HINSTANCE hInstance) :
-		hInstance_(hInstance)
+		hInstance_(hInstance),
+		game_(engine_)
 	{
 	}
 

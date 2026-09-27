@@ -8,7 +8,7 @@
 #include <vector>
 #include <type_traits>
 
-namespace renderer
+namespace motheye::renderer
 {
 	class InstanceManager
 	{

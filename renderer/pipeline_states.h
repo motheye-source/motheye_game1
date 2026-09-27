@@ -1,7 +1,7 @@
 #pragma once
 #include "framework.h"
 
-namespace renderer
+namespace motheye::renderer
 {
 	class PipelineStates
 	{

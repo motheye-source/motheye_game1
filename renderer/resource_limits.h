@@ -1,6 +1,6 @@
 #pragma once
 
-namespace renderer
+namespace motheye::renderer
 {
 	struct ResourceLimits
 	{
