@@ -25,7 +25,7 @@ namespace motheye::engine::world
 
 		//engine::lua::Ref* GetClassRef(const std::string& classname);
 
-		size_t CreateInstance(const std::string& classname, const std::string& name, motheye::model::EntityKind kind);
+		EntityHandle CreateInstance(const std::string& classname, const std::string& name, motheye::model::EntityKind kind);
 		Entity* GetInstance(size_t handle);
 
 	private:
@@ -63,39 +63,12 @@ namespace motheye::engine::world
 		factories_.push_back(std::move(factory));
 	}
 
-
 	//inline engine::lua::Ref* EntityManager::GetClassRef(const std::string& classname)
 	//{
 	//	return GetLuaEntityFactory().GetClassRef(classname);
 	//}
 
-	inline size_t EntityManager::CreateInstance(
-		const std::string& classname, 
-		const std::string& name, 
-		motheye::model::EntityKind kind)
-	{
-		std::unique_ptr<Entity> instance;
-
-		for (auto& factory : factories_)
-		{
-			if (factory->HasClass(classname))
-			{
-				instance = factory->CreateInstance(classname, name, kind);
-				break;
-			}
-		}
-
-		if (!instance)
-		{
-			instance = std::make_unique<Entity>(classname, name, kind);
-		}
-
-		instances_.push_back(std::move(instance));
-
-		return instances_.size() - 1;
-	}
-
-	inline Entity* EntityManager::GetInstance(size_t handle)
+	inline Entity* EntityManager::GetInstance(EntityHandle handle)
 	{
 		if ((handle > 0) && (handle < instances_.size()))
 		{

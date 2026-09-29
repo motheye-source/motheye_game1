@@ -71,10 +71,10 @@ namespace motheye::engine::world
         }
 
         // Add unlighted meshes/solids here.
-        auto axesMesh = renderer.CreateMeshResource<MeshKind::Unlighted>(AxesGeometry::vertices, AxesGeometry::indices);
-        auto axesSolid = renderer.CreateSolidResource(axesMesh);
-        auto instance = renderer.CreateInstance(axesSolid);
-        auto axesMatrix = DirectX::SimpleMath::Matrix::CreateScale(100.0f);
+        const auto axesMesh = renderer.CreateMeshResource<MeshKind::Unlighted>(AxesGeometry::vertices, AxesGeometry::indices);
+        const auto axesSolid = renderer.CreateSolidResource(axesMesh);
+        const auto instance = renderer.CreateInstance(axesSolid);
+        const auto axesMatrix = DirectX::SimpleMath::Matrix::CreateScale(100.0f);
         renderer.SetInstanceMatrix(instance, DirectX::XMLoadFloat4x4(&axesMatrix));
         renderer.GetFrame().Push(instance.As<SolidInstanceHandle>());
     }

@@ -11,7 +11,9 @@ namespace motheye::engine::world
 	{
 	public:
 		virtual std::unique_ptr<Entity> CreateInstance(
-			const std::string& classname, const std::string& name, motheye::model::EntityKind kind) = 0;
+			const std::string& classname, 
+			const std::string& name, 
+			motheye::model::EntityKind kind) = 0;
 		
 		virtual bool HasClass(const std::string& classname) = 0;
 	};

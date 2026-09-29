@@ -10,12 +10,10 @@ namespace motheye::engine::world
     class World
     {
     public:
-
         const std::vector<WorldNode>& GetRoot() const;
         std::vector<WorldNode>& GetRoot();
 
     private:
-
         std::vector<WorldNode> root_;
     };
 

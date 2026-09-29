@@ -8,6 +8,8 @@ namespace motheye::engine::world
 {
 	namespace model = motheye::model;
 
+	using EntityHandle = size_t;
+
 	class Entity
 	{
 	public:

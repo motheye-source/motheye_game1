@@ -19,26 +19,26 @@ namespace motheye::engine::world
     {
     public:
         WorldNode() = default;
-        WorldNode(size_t entityHandle, ResourceHandle resource, InstanceHandle instance);
+        WorldNode(EntityHandle entityHandle, ResourceHandle resource, InstanceHandle instance);
 
-        size_t GetEntityHandle() const;
+        EntityHandle GetEntityHandle() const;
         ResourceHandle GetResource() const;
         InstanceHandle GetInstance() const;
                 
     private:    
-        size_t entityHandle_;
+        EntityHandle entityHandle_;
         ResourceHandle resource_{};
         InstanceHandle instance_{};
     };
 
-    inline WorldNode::WorldNode(size_t entityHandle, ResourceHandle resource, InstanceHandle instance) :
+    inline WorldNode::WorldNode(EntityHandle entityHandle, ResourceHandle resource, InstanceHandle instance) :
         entityHandle_(entityHandle),
         resource_(resource),
         instance_(instance)
     {
     }
 
-    inline size_t WorldNode::GetEntityHandle() const
+    inline EntityHandle WorldNode::GetEntityHandle() const
     {
         return this->entityHandle_;
     }

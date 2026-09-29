@@ -40,7 +40,10 @@ namespace motheye::engine::world
         void LoadMeshes(Renderer& renderer, const std::vector<data::Mesh>& data);
         void LoadSolids(Renderer& renderer, const std::vector<data::Solid>& data);                
         
-        std::unique_ptr<World> CreateWorld(Renderer& renderer, EntityManager& entityManger, const std::vector<data::Entity>& data);        
+        std::unique_ptr<World> CreateWorld(
+            Renderer& renderer, 
+            EntityManager& entityManger, 
+            const std::vector<data::Entity>& data);        
         
         void LoadFrame(Renderer& renderer, EntityManager& entityManager, World& world);
         void LoadDefaultCamera(data::Model& data);
