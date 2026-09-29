@@ -1,56 +1,12 @@
-#pragma once
-#include <motheye/model/model.h>
+#include <motheye/engine/world/transform.h>
 #include <motheye/math/math.h>
-#include <DirectXMath.h>
+
 
 #define DEGTORAD(a) (((a) * 2.0f * motheye::math::PI) / 360.0f)
 
 namespace motheye::engine::world
 {
-	struct Transform
-	{
-		Transform();
-		Transform(const motheye::model::Transform& data);
-		
-		void Reset();
-		void SetRotationFromEuler(DirectX::XMFLOAT4X4& result) const;
-		void ToMatrix(DirectX::XMFLOAT4X4& result) const;
-		DirectX::XMMATRIX ToXMMatrix() const;
-		
-		float sx, sy, sz;
-		float rx, ry, rz, rw;
-		float x, y, z;
-	};
-
-	inline Transform::Transform()
-	{
-		Reset();
-	}
-
-	inline Transform::Transform(const motheye::model::Transform& data)
-	{
-		x = data.x;
-		y = data.y;
-		z = data.z;
-
-		rx = data.rx;
-		ry = data.ry;
-		rz = data.rz;
-		rw = (data.rotationKind == motheye::model::RotationKind::kQuaternion) ? data.rw : 1.0;
-
-		sx = data.sx;
-		sy = data.sy;
-		sz = data.sz;
-	}
-
-	inline void Transform::Reset()
-	{
-		x = y = z = 0.0f;
-		rx = ry = rz = 0.0f; rw = 1.0f;
-		sx = sy = sz = 1.0f;
-	}
-
-	inline void Transform::SetRotationFromEuler(DirectX::XMFLOAT4X4& result) const
+	void Transform::SetRotationFromEuler(DirectX::XMFLOAT4X4& result) const
 	{
 		// Pitch (about right/X axis)
 		float Cp = cosf(DEGTORAD(rx));
@@ -77,7 +33,7 @@ namespace motheye::engine::world
 		result._33 *= -(Sp * Sr * Sy) + (Cp * Cy);
 	}
 
-	inline void Transform::ToMatrix(DirectX::XMFLOAT4X4& result) const
+	void Transform::ToMatrix(DirectX::XMFLOAT4X4& result) const
 	{
 		// M = SRT
 
@@ -109,10 +65,10 @@ namespace motheye::engine::world
 		result._44 = 1.0f;
 	}
 
-	inline DirectX::XMMATRIX Transform::ToXMMatrix() const
+	DirectX::XMMATRIX Transform::ToXMMatrix() const
 	{
 		DirectX::XMFLOAT4X4 result;
 		ToMatrix(result);
 		return DirectX::XMLoadFloat4x4(&result);
-	}
+}
 }

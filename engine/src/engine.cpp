@@ -42,33 +42,39 @@ namespace motheye::engine
 
 	void Engine::LoadWorld(const motheye::model::Model& model, const std::filesystem::path& defaultTexture)
 	{
-		world_ = world::WorldLoader::Load(*renderer_, model, defaultTexture);
+		world_ = world::WorldLoader::Load(*renderer_, entityManager_, model, defaultTexture);
 	}
 
 	void Engine::RenderScene()
 	{
-		world::Transform transform;
-
 		renderer::Frame& frame = renderer_->GetFrame();
 
-		for (const auto& object : world_->GetRoot())
+		for (const auto& node : world_->GetRoot())
 		{
-			switch (object.kind)
+			const auto entity = entityManager_.GetInstance(node.GetEntityHandle());
+			if (!entity)
+			{
+				continue;
+			}
+
+			const auto worldMatrix = entity->ComputeWorldMatrix();
+
+			switch (entity->GetKind())
 			{
 			case motheye::model::EntityKind::kCamera:
 			{
-				const auto camera = object.instance.As<renderer::CameraInstanceHandle>();
-				renderer_->SetInstanceMatrix(camera, transform.ToXMMatrix());
+				const auto camera = node.GetInstance().As<renderer::CameraInstanceHandle>();
+				renderer_->SetInstanceMatrix(camera, worldMatrix);
 
 				frame.SetCamera(camera);
 			}
 			break;
 
 			case motheye::model::EntityKind::kSolid:
-				renderer_->SetInstanceMatrix(object.instance.As<renderer::SolidInstanceHandle>(), object.ComputeWorldMatrix());
+				renderer_->SetInstanceMatrix(node.GetInstance().As<renderer::SolidInstanceHandle>(), worldMatrix);
 				break;
 			case motheye::model::EntityKind::kLight:
-				renderer_->SetInstanceMatrix(object.instance.As<renderer::LightInstanceHandle>(), object.ComputeWorldMatrix());
+				renderer_->SetInstanceMatrix(node.GetInstance().As<renderer::LightInstanceHandle>(), worldMatrix);
 				break;
 			}
 		}

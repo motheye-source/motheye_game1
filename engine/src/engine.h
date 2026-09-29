@@ -11,7 +11,8 @@
 #include "renderer/renderer.h"
 
 #include "clock_source.h"
-#include "world/world.h"
+#include "src/world/entity_manager.h"
+#include "src/world/world.h"
 
 #include <memory>
 #include <filesystem>
@@ -39,6 +40,7 @@ namespace motheye::engine
 		void OnResize(unsigned int, unsigned int) override;
 		void OnReleaseInput() override;
 			
+		void RegisterEntityFactory(std::unique_ptr<world::IEntityFactory>&& factory) override;
 		void LoadWorld(const motheye::model::Model& model, const std::filesystem::path& defaultTexture) override;
 
 	private:
@@ -53,6 +55,7 @@ namespace motheye::engine
 		std::unique_ptr<renderer::Renderer> renderer_;
 
 		std::unique_ptr<world::World> world_;
+		world::EntityManager entityManager_;
 	};
 	
 	inline void Engine::OnInitFrame()
@@ -80,6 +83,11 @@ namespace motheye::engine
 		inputState_.ReleaseActiveHeldInput();
 
 		// TODO: How to notify App so that input mode can be switched to legacy if needed?
+	}
+
+	inline void Engine::RegisterEntityFactory(std::unique_ptr<world::IEntityFactory>&& factory)
+	{
+		entityManager_.RegisterFactory(std::move(factory));
 	}
 
 }

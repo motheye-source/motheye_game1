@@ -1,47 +1,55 @@
 #pragma once
-#include "transform.h"
+#include <motheye/engine/world/transform.h>
+#include <motheye/engine/world/entity.h>
 #include "resource_map.h"
 
 #include "renderer/renderer.h"
 
 #include <motheye/model/model.h>
 
+#include <memory>
+
 namespace motheye::engine::world
 {
-    namespace data = motheye::model;
+    namespace model = motheye::model;
     using motheye::renderer::ResourceHandle;
     using motheye::renderer::InstanceHandle;
 
-    struct WorldNode
+    class WorldNode
     {
+    public:
         WorldNode() = default;
-        WorldNode(const data::Entity& data, ResourceHandle resource);
+        WorldNode(size_t entityHandle, ResourceHandle resource, InstanceHandle instance);
 
-        DirectX::XMMATRIX ComputeWorldMatrix() const;
-        
-        data::EntityKind kind;
-        const std::string name;
-        const std::string classname;
-        
-        Transform transform;
-
-        ResourceHandle resource{};
-        InstanceHandle instance{};
+        size_t GetEntityHandle() const;
+        ResourceHandle GetResource() const;
+        InstanceHandle GetInstance() const;
+                
+    private:    
+        size_t entityHandle_;
+        ResourceHandle resource_{};
+        InstanceHandle instance_{};
     };
 
-    inline WorldNode::WorldNode(const data::Entity& data, ResourceHandle resource) :
-        kind(data.kind),
-        name(data.name),
-        classname(data.classname),
-        transform(data.transform),
-        resource(resource)
+    inline WorldNode::WorldNode(size_t entityHandle, ResourceHandle resource, InstanceHandle instance) :
+        entityHandle_(entityHandle),
+        resource_(resource),
+        instance_(instance)
     {
     }
 
-    inline DirectX::XMMATRIX WorldNode::ComputeWorldMatrix() const
+    inline size_t WorldNode::GetEntityHandle() const
     {
-        DirectX::XMFLOAT4X4 transformMatrix;
-        transform.ToMatrix(transformMatrix);
-        return XMLoadFloat4x4(&transformMatrix);
+        return this->entityHandle_;
     }
+
+    inline ResourceHandle WorldNode::GetResource() const
+    {
+        return this->resource_;
+    }
+    
+    inline InstanceHandle WorldNode::GetInstance() const
+    {
+        return this->instance_;
+    } 
 }

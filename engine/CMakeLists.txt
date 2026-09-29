@@ -7,17 +7,22 @@ add_library(${PROJECT_NAME} STATIC
 	"include/motheye/engine/input/mouse_keyboard_state.h"
 	"include/motheye/engine/input/input_state.h"
 
+	"include/motheye/engine/world/entity.h"
+	"include/motheye/engine/world/i_entity_factory.h"
+	"include/motheye/engine/world/transform.h"
+	
 	"src/engine.h"
 	"src/engine.cpp"
 	"src/clock_source.h"
 
 	"src/world/axes_geometry.h"
+	"src/world/entity_manager.h"
 	"src/world/resource_map.h"
 	"src/world/world.h"
 	"src/world/world_loader.h"
 	"src/world/world_loader.cpp"
 	"src/world/world_node.h"
-	"src/world/transform.h"
+	"src/world/transform.cpp"
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES

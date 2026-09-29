@@ -19,55 +19,53 @@ using namespace motheye::renderer;
 namespace motheye::engine::world
 {
     std::unique_ptr<World> WorldLoader::Load(
-        Renderer& renderer, 
+        Renderer& renderer,
+        EntityManager& entityManager,
         const data::Model& data, 
         const std::filesystem::path& defaultTexture)
     {       
         renderer.InitScene();
 
         WorldLoader loader(defaultTexture);
-        auto world = loader.LoadData(data, renderer);
+        
+        loader.LoadResources(renderer, data);
 
-        loader.LoadFrame(renderer, *world);
+        auto world = loader.CreateWorld(renderer, entityManager, data.entities);
+
+        loader.LoadFrame(renderer, entityManager, *world);
 
         return world;
     }
 
-    std::unique_ptr<World> WorldLoader::LoadData(const data::Model& data, Renderer& renderer)
+    void WorldLoader::LoadResources(Renderer& renderer, const data::Model& data)
     {
-        std::unique_ptr<World> world = std::make_unique<World>();
-
         this->LoadCameras(renderer, data.resources.cameras);
         this->LoadLights(renderer, data.resources.lights);
         this->LoadTextures(renderer, data.resources.textures);
         this->LoadMaterials(renderer, data.resources.materials);
         this->LoadMeshes(renderer, data.resources.meshes);
         this->LoadSolids(renderer, data.resources.solids);
-        this->LoadEntities(*world, data.entities);
-
-        return world;
     }
 
-    void WorldLoader::LoadFrame(Renderer& renderer, World& world)
+    void WorldLoader::LoadFrame(Renderer& renderer, EntityManager& entityManager, World& world)
     {
         // For now, push once into the frame and do not clear.
-        for (auto& object : world.GetRoot())
+        for (auto& node : world.GetRoot())
         {
-            switch (object.kind)
+            const auto entity = entityManager.GetInstance(node.GetEntityHandle());
+
+            switch (entity->GetKind())
             {
             case data::EntityKind::kCamera:
-                object.instance = renderer.CreateInstance(object.resource.As<CameraResourceHandle>());
-                renderer.GetFrame().SetCamera(object.instance.As<CameraInstanceHandle>());
+                renderer.GetFrame().SetCamera(node.GetInstance().As<CameraInstanceHandle>());
                 break;
             
             case data::EntityKind::kSolid:
-                object.instance = renderer.CreateInstance(object.resource.As<SolidResourceHandle>());
-                renderer.GetFrame().Push(object.instance.As<SolidInstanceHandle>());
+                renderer.GetFrame().Push(node.GetInstance().As<SolidInstanceHandle>());
                 break;
             
             case data::EntityKind::kLight:
-                object.instance = renderer.CreateInstance(object.resource.As<LightResourceHandle>());
-                renderer.GetFrame().Push(object.instance.As<LightInstanceHandle>());
+                renderer.GetFrame().Push(node.GetInstance().As<LightInstanceHandle>());
                 break;
             }
         }
@@ -171,33 +169,47 @@ namespace motheye::engine::world
         }
     }
 
-    void WorldLoader::LoadEntities(World& world, const std::vector<data::Entity>& data)
+    std::unique_ptr<World> WorldLoader::CreateWorld(
+        Renderer& renderer, 
+        EntityManager& entityManager, 
+        const std::vector<data::Entity>& data)
     {
-        auto& root = world.GetRoot();
+        std::unique_ptr<World> world = std::make_unique<World>();
 
-        for (const auto& object : data)
+        auto& root = world->GetRoot();
+
+        for (const auto& modelEntity : data)
         {
             ResourceHandle resource{};
-            switch (object.kind)
+            InstanceHandle instance{};
+
+            switch (modelEntity.kind)
             {
             case data::EntityKind::kCamera:
-                resource = resourceMap_.GetCamera(object.resource);
+                resource = resourceMap_.GetCamera(modelEntity.resource);
+                instance = renderer.CreateInstance(resource.As<CameraResourceHandle>());
                 break;
 
             case data::EntityKind::kSolid:
-                resource = resourceMap_.GetSolid(object.resource);
+                resource = resourceMap_.GetSolid(modelEntity.resource);
+                instance = renderer.CreateInstance(resource.As<SolidResourceHandle>());
                 break;
 
             case data::EntityKind::kLight:
-                resource = resourceMap_.GetLight(object.resource);
+                resource = resourceMap_.GetLight(modelEntity.resource);
+                instance = renderer.CreateInstance(resource.As<LightResourceHandle>());
                 break;
 
             default:
                 continue;
             }
 
-            root.emplace_back(object, resource);
+            auto entityHandle = entityManager.CreateInstance(modelEntity.classname, modelEntity.name, modelEntity.kind);
+
+            root.emplace_back(entityHandle, resource, instance);
         }
+
+        return world;        
     }
 
     MeshResourceHandle WorldLoader::CreateLightedMeshResource(Renderer& renderer, const data::Mesh& data)
