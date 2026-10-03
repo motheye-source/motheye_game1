@@ -45,7 +45,6 @@ namespace motheye::engine
 
 	private:
 		void InitRenderer(HWND hWnd);
-		void RenderScene();
 
 	private:
 		ClockSource clock_;
@@ -54,8 +53,7 @@ namespace motheye::engine
 		std::unique_ptr<motheye::dx12::DXGIAdapter> adapter_;
 		std::unique_ptr<renderer::Renderer> renderer_;
 
-		std::unique_ptr<world::World> world_;
-		world::EntityManager entityManager_;
+		world::World world_;
 	};
 	
 	inline void Engine::OnInitFrame()
@@ -73,11 +71,6 @@ namespace motheye::engine
 		inputState_.ApplyControllerEvent(event);
 	}
 
-	inline void Engine::OnResize(unsigned int width, unsigned int height)
-	{
-		renderer_->Resize(width, height);
-	}
-
 	inline void Engine::OnReleaseInput()
 	{
 		inputState_.ReleaseActiveHeldInput();
@@ -85,9 +78,14 @@ namespace motheye::engine
 		// TODO: How to notify App so that input mode can be switched to legacy if needed?
 	}
 
+	inline void Engine::OnResize(unsigned int width, unsigned int height)
+	{
+		renderer_->Resize(width, height);
+	}
+
 	inline void Engine::RegisterEntityFactory(std::unique_ptr<world::IEntityFactory>&& factory)
 	{
-		entityManager_.RegisterFactory(std::move(factory));
+		world_.GetEntityManager().RegisterFactory(std::move(factory));
 	}
 
 }

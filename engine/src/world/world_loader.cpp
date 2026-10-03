@@ -18,73 +18,40 @@ using namespace motheye::renderer;
 
 namespace motheye::engine::world
 {
-    std::unique_ptr<World> WorldLoader::Load(
+    std::unique_ptr<Node> WorldLoader::Load(
         Renderer& renderer,
         EntityManager& entityManager,
         const data::Model& data, 
         const std::filesystem::path& defaultTexture)
     {       
-        renderer.InitScene();
-
-        WorldLoader loader(defaultTexture);
+        WorldLoader loader(renderer, entityManager, defaultTexture);
         
-        loader.LoadResources(renderer, data);
+        loader.LoadResources(data);
 
-        auto world = loader.CreateWorld(renderer, entityManager, data.entities);
+        loader.LoadEntities(data.entities);
 
-        loader.LoadFrame(renderer, entityManager, *world);
+        std::unique_ptr<Node> rootNode = std::make_unique<Node>();
+        loader.LoadNode(*rootNode, data.rootnode);
 
-        return world;
+        return rootNode;
     }
 
-    void WorldLoader::LoadResources(Renderer& renderer, const data::Model& data)
+    void WorldLoader::LoadResources(const data::Model& data)
     {
-        this->LoadCameras(renderer, data.resources.cameras);
-        this->LoadLights(renderer, data.resources.lights);
-        this->LoadTextures(renderer, data.resources.textures);
-        this->LoadMaterials(renderer, data.resources.materials);
-        this->LoadMeshes(renderer, data.resources.meshes);
-        this->LoadSolids(renderer, data.resources.solids);
+        this->LoadCameras(data.resources.cameras);
+        this->LoadLights(data.resources.lights);
+        this->LoadTextures(data.resources.textures);
+        this->LoadMaterials(data.resources.materials);
+        this->LoadMeshes(data.resources.meshes);
+        this->LoadSolids(data.resources.solids);
     }
-
-    void WorldLoader::LoadFrame(Renderer& renderer, EntityManager& entityManager, World& world)
-    {
-        // For now, push once into the frame and do not clear.
-        for (auto& node : world.GetRoot())
-        {
-            const auto entity = entityManager.GetInstance(node.GetEntityHandle());
-
-            switch (entity->GetKind())
-            {
-            case data::EntityKind::kCamera:
-                renderer.GetFrame().SetCamera(node.GetInstance().As<CameraInstanceHandle>());
-                break;
-            
-            case data::EntityKind::kSolid:
-                renderer.GetFrame().Push(node.GetInstance().As<SolidInstanceHandle>());
-                break;
-            
-            case data::EntityKind::kLight:
-                renderer.GetFrame().Push(node.GetInstance().As<LightInstanceHandle>());
-                break;
-            }
-        }
-
-        // Add unlighted meshes/solids here.
-        const auto axesMesh = renderer.CreateMeshResource<MeshKind::Unlighted>(AxesGeometry::vertices, AxesGeometry::indices);
-        const auto axesSolid = renderer.CreateSolidResource(axesMesh);
-        const auto instance = renderer.CreateInstance(axesSolid);
-        const auto axesMatrix = DirectX::SimpleMath::Matrix::CreateScale(100.0f);
-        renderer.SetInstanceMatrix(instance, DirectX::XMLoadFloat4x4(&axesMatrix));
-        renderer.GetFrame().Push(instance.As<SolidInstanceHandle>());
-    }
-
-    void WorldLoader::LoadCameras(Renderer& renderer, const std::vector<data::Camera>& data)
+  
+    void WorldLoader::LoadCameras(const std::vector<data::Camera>& data)
     {
         // Create camera resources
         for (const auto& camera : data)
         {
-            auto resource = renderer.CreateCameraResource(
+            auto resource = renderer_.CreateCameraResource(
                 static_cast<float>(camera.fov), 
                 static_cast<float>(camera.nearClip), 
                 static_cast<float>(camera.farClip));
@@ -93,19 +60,19 @@ namespace motheye::engine::world
         }
     }
 
-    void WorldLoader::LoadLights(Renderer& renderer, const std::vector<data::Light>& data)
+    void WorldLoader::LoadLights(const std::vector<data::Light>& data)
     {
         // Create light resources
         for (const auto& light : data)
         {
-            auto resource = renderer.CreateLightResource(ToFloat4(light.color));
+            auto resource = renderer_.CreateLightResource(ToFloat4(light.color));
             resourceMap_.AddLight(light.name, resource);
         }
     }
 
-    void WorldLoader::LoadTextures(Renderer& renderer, const std::vector<data::Texture>& data)
+    void WorldLoader::LoadTextures(const std::vector<data::Texture>& data)
     {
-        auto defaultResource = renderer.CreateTextureResource(defaultTexture_.string());
+        auto defaultResource = renderer_.CreateTextureResource(defaultTexture_.string());
         resourceMap_.AddTexture("", defaultResource);
 
         // Create texture resources
@@ -119,7 +86,7 @@ namespace motheye::engine::world
             // For now, replace the extension to .dds.
             path.replace_extension(".dds");
 
-            auto resource = renderer.CreateTextureResource(path.string());
+            auto resource = renderer_.CreateTextureResource(path.string());
             if (!resource.IsValid())
             {
                 resource = defaultResource;
@@ -129,28 +96,28 @@ namespace motheye::engine::world
         }
     }
 
-    void WorldLoader::LoadMaterials(Renderer& renderer, const std::vector<data::Material>& data)
+    void WorldLoader::LoadMaterials(const std::vector<data::Material>& data)
     {
         // Create material resources
         for (const auto& material : data)
         {
             auto texture = resourceMap_.GetTexture(material.baseTexture);
-            auto resource = renderer.CreateMaterialResource(ToFloat4(material.diffuse), texture);
+            auto resource = renderer_.CreateMaterialResource(ToFloat4(material.diffuse), texture);
             resourceMap_.AddMaterial(material.name, resource);
         }
     }
 
-    void WorldLoader::LoadMeshes(Renderer& renderer, const std::vector<data::Mesh>& data)
+    void WorldLoader::LoadMeshes(const std::vector<data::Mesh>& data)
     {
         // Create mesh resources
         for (const auto& mesh : data)
         {
-            auto resource = CreateLightedMeshResource(renderer, mesh);
+            auto resource = CreateLightedMeshResource(renderer_, mesh);
             resourceMap_.AddMesh(mesh.name, resource);
         }
     }
 
-    void WorldLoader::LoadSolids(Renderer& renderer, const std::vector<data::Solid>& data)
+    void WorldLoader::LoadSolids(const std::vector<data::Solid>& data)
     {
         // Create solid resources
         for (const auto& solid : data)
@@ -164,20 +131,13 @@ namespace motheye::engine::world
             }
 
             auto mesh = resourceMap_.GetMesh(solid.mesh);
-            auto resource = renderer.CreateSolidResource(mesh, std::move(materials));
+            auto resource = renderer_.CreateSolidResource(mesh, std::move(materials));
             resourceMap_.AddSolid(solid.name, resource);
         }
     }
 
-    std::unique_ptr<World> WorldLoader::CreateWorld(
-        Renderer& renderer, 
-        EntityManager& entityManager, 
-        const std::vector<data::Entity>& data)
+    void WorldLoader::LoadEntities(const std::vector<data::Entity>& data)
     {
-        std::unique_ptr<World> world = std::make_unique<World>();
-
-        auto& root = world->GetRoot();
-
         for (const auto& modelEntity : data)
         {
             ResourceHandle resource{};
@@ -187,29 +147,40 @@ namespace motheye::engine::world
             {
             case data::EntityKind::kCamera:
                 resource = resourceMap_.GetCamera(modelEntity.resource);
-                instance = renderer.CreateInstance(resource.As<CameraResourceHandle>());
+                instance = renderer_.CreateInstance(resource.As<CameraResourceHandle>());
                 break;
 
             case data::EntityKind::kSolid:
                 resource = resourceMap_.GetSolid(modelEntity.resource);
-                instance = renderer.CreateInstance(resource.As<SolidResourceHandle>());
+                instance = renderer_.CreateInstance(resource.As<SolidResourceHandle>());
                 break;
 
             case data::EntityKind::kLight:
                 resource = resourceMap_.GetLight(modelEntity.resource);
-                instance = renderer.CreateInstance(resource.As<LightResourceHandle>());
+                instance = renderer_.CreateInstance(resource.As<LightResourceHandle>());
                 break;
 
             default:
                 continue;
             }
 
-            auto entityHandle = entityManager.CreateInstance(modelEntity.classname, modelEntity.name, modelEntity.kind);
-
-            root.emplace_back(entityHandle, resource, instance);
+            auto entityHandle = entityManager_.CreateInstance(
+                modelEntity.name, 
+                modelEntity.kind, 
+                modelEntity.classname,
+                instance);
         }
+    }
 
-        return world;        
+    void WorldLoader::LoadNode(Node& node, const data::Node& data)
+    {        
+        node.SetEntityHandle(entityManager_.GetHandleByName(data.entity));
+
+        for (const auto& dataNode : data.nodes)
+        {
+            auto& subnode = node.GetNodes().emplace_back();
+            LoadNode(subnode, dataNode);
+        }
     }
 
     MeshResourceHandle WorldLoader::CreateLightedMeshResource(Renderer& renderer, const data::Mesh& data)

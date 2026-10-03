@@ -36,54 +36,13 @@ namespace motheye::engine
 		const float deltaSeconds = clock_.Tick();
 
 		// TODO:  forward inputState_ to game to resolve actions
-		//game_.Resolve(inputState_, deltaSeconds);
-		RenderScene();
+		// game_.Resolve(inputState_, deltaSeconds);
+
+		world_.Render(*renderer_);
 	}
 
 	void Engine::LoadWorld(const motheye::model::Model& model, const std::filesystem::path& defaultTexture)
 	{
-		world_ = world::WorldLoader::Load(*renderer_, entityManager_, model, defaultTexture);
-	}
-
-	void Engine::RenderScene()
-	{
-		renderer::Frame& frame = renderer_->GetFrame();
-
-		for (const auto& node : world_->GetRoot())
-		{
-			const auto entity = entityManager_.GetInstance(node.GetEntityHandle());
-			if (!entity)
-			{
-				continue;
-			}
-
-			const auto worldMatrix = entity->ComputeWorldMatrix();
-
-			switch (entity->GetKind())
-			{
-			case motheye::model::EntityKind::kCamera:
-			{
-				const auto camera = node.GetInstance().As<renderer::CameraInstanceHandle>();
-				renderer_->SetInstanceMatrix(camera, worldMatrix);
-
-				frame.SetCamera(camera);
-			}
-			break;
-
-			case motheye::model::EntityKind::kSolid:
-				renderer_->SetInstanceMatrix(node.GetInstance().As<renderer::SolidInstanceHandle>(), worldMatrix);
-				break;
-			case motheye::model::EntityKind::kLight:
-				renderer_->SetInstanceMatrix(node.GetInstance().As<renderer::LightInstanceHandle>(), worldMatrix);
-				break;
-			}
-		}
-
-		frame.SetAmbientLightColor({ 0.3f, 0.3f, 0.3f, 1.0f });
-
-		renderer_->SetRenderTargetClearColor({ 0.45f, 0.55f, 0.60f, 1.00f });
-		renderer_->BeginRender();
-		renderer_->RenderScene();
-		renderer_->EndRender();
-	}
+		world_.Load(*renderer_, model, defaultTexture);
+	}	
 }

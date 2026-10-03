@@ -18,12 +18,13 @@ add_library(${PROJECT_NAME} STATIC
 	"src/world/axes_geometry.h"
 	"src/world/entity_manager.h"
 	"src/world/entity_manager.cpp"
+	"src/world/node.h"
 	"src/world/resource_map.h"
+	"src/world/transform.cpp"
 	"src/world/world.h"
+	"src/world/world.cpp"
 	"src/world/world_loader.h"
 	"src/world/world_loader.cpp"
-	"src/world/world_node.h"
-	"src/world/transform.cpp"
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES

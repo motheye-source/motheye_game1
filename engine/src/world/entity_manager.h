@@ -6,15 +6,19 @@
 //#include "lua/script_engine.h"
 //#include "lua/ref.h"
 
+#include "renderer/instance_handle.h"
+#include "entity_instance.h"
+
 #include <memory>
 #include <string>
 #include <filesystem>
 #include <vector>
+#include <unordered_map>
 
 namespace motheye::engine::world
-{
+{	
 	class EntityManager
-	{
+	{	
 	public:
 
 		//EntityManager(engine::lua::ScriptEngine& scriptEngine);
@@ -25,8 +29,15 @@ namespace motheye::engine::world
 
 		//engine::lua::Ref* GetClassRef(const std::string& classname);
 
-		EntityHandle CreateInstance(const std::string& classname, const std::string& name, motheye::model::EntityKind kind);
-		Entity* GetInstance(size_t handle);
+		EntityHandle CreateInstance(
+			const std::string& name, 
+			motheye::model::EntityKind kind, 
+			const std::string& classname,
+			renderer::InstanceHandle instanceHandle);
+		
+
+		EntityInstance* GetInstance(size_t handle);
+		EntityHandle GetHandleByName(const std::string& name);
 
 	private:
 		//LuaEntityFactory& GetLuaEntityFactory();
@@ -34,7 +45,8 @@ namespace motheye::engine::world
 	private:
 		//engine::lua::ScriptEngine& scriptEngine_;
 		std::vector<std::unique_ptr<IEntityFactory>> factories_;
-		std::vector<std::unique_ptr<Entity>> instances_;
+		std::vector<EntityInstance> instances_;
+		std::unordered_map<std::string, EntityHandle> nameMap_;
 	};
 
 	//inline EntityManager::EntityManager(engine::lua::ScriptEngine& scriptEngine) :
@@ -45,7 +57,7 @@ namespace motheye::engine::world
 	inline EntityManager::EntityManager()
 	{
 		// Reserve index 0 for invalid handle.
-		instances_.push_back(nullptr);
+		instances_.emplace_back(nullptr, renderer::InstanceHandle());
 	}
 
 	//inline LuaEntityFactory& EntityManager::GetLuaEntityFactory()
@@ -68,12 +80,22 @@ namespace motheye::engine::world
 	//	return GetLuaEntityFactory().GetClassRef(classname);
 	//}
 
-	inline Entity* EntityManager::GetInstance(EntityHandle handle)
+	inline EntityInstance* EntityManager::GetInstance(EntityHandle handle)
 	{
 		if ((handle > 0) && (handle < instances_.size()))
 		{
-			return instances_[handle].get();
+			return &instances_[handle];
 		}
 		return nullptr;
+	}
+
+	inline EntityHandle EntityManager::GetHandleByName(const std::string& name)
+	{
+		const auto it = nameMap_.find(name);
+		if (it == nameMap_.end())
+		{
+			return InvalidEntityHandle;
+		}
+		return it->second;
 	}
 }

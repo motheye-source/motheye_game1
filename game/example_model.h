@@ -56,14 +56,14 @@ namespace game
             transform.sx = 6.0;
             transform.sy = 1.0;
             transform.sz = 6.0;
-            builder.PushEntity("ground", motheye::model::EntityKind::kSolid, "ground", "", transform);
+            builder.PushEntity("ground", motheye::model::EntityKind::kSolid, "ground", transform);
 
             transform = { 0 };
             transform.y = 2.0;
             transform.sx = 2.0;
             transform.sy = 2.0;
             transform.sz = 2.0;
-            builder.PushEntity("pyramid", motheye::model::EntityKind::kSolid, "pyramid", "", transform);
+            builder.PushEntity("pyramid", motheye::model::EntityKind::kSolid, "pyramid", transform);
 
             transform = { 0 };
             transform.x = 4.0;
@@ -71,7 +71,7 @@ namespace game
             transform.sx = 1.0;
             transform.sy = 1.0;
             transform.sz = 1.0;
-            builder.PushEntity("cubeA", motheye::model::EntityKind::kSolid, "cubeA", "", transform);
+            builder.PushEntity("cubeA", motheye::model::EntityKind::kSolid, "cubeA", transform);
 
             transform = { 0 };
             transform.x = -4.0;
@@ -79,7 +79,7 @@ namespace game
             transform.sx = 1.0;
             transform.sy = 1.0;
             transform.sz = 1.0;
-            builder.PushEntity("cubeB", motheye::model::EntityKind::kSolid, "cubeB", "", transform);
+            builder.PushEntity("cubeB", motheye::model::EntityKind::kSolid, "cubeB", transform);
 
             transform = { 0 };
             transform.z = 4.0;
@@ -87,7 +87,7 @@ namespace game
             transform.sx = 1.0;
             transform.sy = 1.0;
             transform.sz = 1.0;
-            builder.PushEntity("cubeC", motheye::model::EntityKind::kSolid, "cubeC", "", transform);
+            builder.PushEntity("cubeC", motheye::model::EntityKind::kSolid, "cubeC", transform);
 
             transform = { 0 };
             transform.z = -4.0;
@@ -95,31 +95,54 @@ namespace game
             transform.sx = 1.0;
             transform.sy = 1.0;
             transform.sz = 1.0;
-            builder.PushEntity("cubeD", motheye::model::EntityKind::kSolid, "cubeD", "", transform);
+            builder.PushEntity("cubeD", motheye::model::EntityKind::kSolid, "cubeD", transform);
 
             transform = { 0 };
             transform.x = 15.0;
             transform.y = 15.0;
             transform.z = -15.0;
-            builder.PushEntity("light1", motheye::model::EntityKind::kLight, "light1", "", transform);
+            builder.PushEntity("light1", motheye::model::EntityKind::kLight, "light1", transform);
 
             transform = { 0 };
             transform.x = -15.0;
             transform.y = 15.0;
             transform.z = -15.0;
-            builder.PushEntity("light2", motheye::model::EntityKind::kLight, "light2", "", transform);
+            builder.PushEntity("light2", motheye::model::EntityKind::kLight, "light2", transform);
 
             transform = { 0 };
             transform.x = -15.0;
             transform.y = 15.0;
             transform.z = 15.0;
-            builder.PushEntity("light3", motheye::model::EntityKind::kLight, "light3", "", transform);
+            builder.PushEntity("light3", motheye::model::EntityKind::kLight, "light3", transform);
 
             transform = { 0 };
             transform.x = 15.0;
             transform.y = 15.0;
             transform.z = 15.0;
-            builder.PushEntity("light4", motheye::model::EntityKind::kLight, "light4", "", transform);
+            builder.PushEntity("light4", motheye::model::EntityKind::kLight, "light4", transform);
+
+            transform = { 0 };
+            transform.sx = 1.0;
+            transform.sy = 1.0;
+            transform.sz = 1.0;
+            builder.PushEntity("@root", motheye::model::EntityKind::kEmpty, "", transform);
+
+            // TODO:  this hasn't been tested yet
+            model->rootnode = { 
+                .entity = "@root", 
+                .nodes = {
+                    { "ground", {} },
+                    { "pyramid", {} },
+                    { "cubeA", {} },
+                    { "cubeB", {} },
+                    { "cubeC", {} },
+                    { "cubeD", {} },
+                    { "light1", {} },
+                    { "light2", {} },
+                    { "light3", {} },
+                    { "light4", {} } 
+                } 
+            };
 
             return model;
         }

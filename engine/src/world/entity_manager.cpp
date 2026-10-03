@@ -4,9 +4,10 @@
 namespace motheye::engine::world
 {
 	EntityHandle EntityManager::CreateInstance(
-		const std::string& classname,
 		const std::string& name,
-		motheye::model::EntityKind kind)
+		motheye::model::EntityKind kind,
+		const std::string& classname,
+		renderer::InstanceHandle instanceHandle)
 	{
 		std::unique_ptr<Entity> instance;
 
@@ -14,18 +15,21 @@ namespace motheye::engine::world
 		{
 			if (factory->HasClass(classname))
 			{
-				instance = factory->CreateInstance(classname, name, kind);
+				instance = factory->CreateInstance(name, kind, classname);
 				break;
 			}
 		}
 
 		if (!instance)
 		{
-			instance = std::make_unique<Entity>(classname, name, kind);
+			instance = std::make_unique<Entity>(name, kind, classname);
 		}
 
-		instances_.push_back(std::move(instance));
+		EntityHandle handle = static_cast<EntityHandle>(instances_.size());
 
-		return static_cast<EntityHandle>(instances_.size() - 1);
+		instances_.emplace_back(std::move(instance), instanceHandle);
+		nameMap_.emplace(name, handle);
+
+		return handle;
 	}
 }

@@ -82,9 +82,9 @@ namespace game
         model.resources.cameras.emplace_back(camera);
 
         motheye::model::Entity entity{};
-        entity.name = "default";
+        entity.name = "@default_camera";
         entity.resource = "default";
-        entity.classname = "FPSCamera";
+        entity.classname = "fps_camera";
         entity.kind = EntityKind::kCamera;
         entity.transform = {};
         entity.transform.rotationKind = RotationKind::kEuler;
@@ -93,5 +93,7 @@ namespace game
         entity.transform.sy = 1.0;
         entity.transform.sz = 1.0;
         model.entities.emplace_back(entity);
+
+        model.rootnode.nodes.emplace_back(entity.name);
     }
 }
