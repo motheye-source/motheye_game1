@@ -5,14 +5,15 @@
 #include <motheye/platform/input/controller_event.h>
 
 #include <motheye/engine/i_engine.h>
+#include <motheye/engine/i_game.h>
 #include <motheye/model/model.h>
 
 #include "renderer/renderer.h"
 
 #include "clock_source.h"
-#include "src/input/input_handler.h"
-#include "src/world/entity_manager.h"
-#include "src/world/world.h"
+#include "engine/src/input/input_handler.h"
+#include "engine/src/world/entity_manager.h"
+#include "engine/src/world/world.h"
 
 #include <memory>
 #include <filesystem>
@@ -28,6 +29,9 @@ namespace motheye::engine
 	class Engine : public IFrameHandler, public IEngine
 	{
 	public:
+
+		Engine(IGame& game);
+
 		void Start(HWND hWnd);
 		void Stop();
 
@@ -55,8 +59,14 @@ namespace motheye::engine
 		std::unique_ptr<renderer::Renderer> renderer_;
 
 		world::World world_;
+		IGame& game_;
 	};
 	
+	inline Engine::Engine(IGame& game) :
+		game_(game)
+	{
+	}
+
 	inline void Engine::OnInitFrame()
 	{
 		inputHandler_.BeginFrame();
@@ -75,8 +85,6 @@ namespace motheye::engine
 	inline void Engine::OnReleaseInput()
 	{
 		inputHandler_.ReleaseActiveHeldInput();
-
-		// TODO: How to notify App so that input mode can be switched to legacy if needed?
 	}
 
 	inline void Engine::OnResize(unsigned int width, unsigned int height)

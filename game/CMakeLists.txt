@@ -5,6 +5,8 @@ add_library(${PROJECT_NAME} STATIC
 	"action_frame.h"
 	"action_resolver.h"
 	"controller_binder.h"
+	"entity_factory.cpp"
+	"entity_factory.h"
 	"example_model.h"
 	"fps_camera.cpp"
 	"fps_camera.h"
@@ -29,6 +31,8 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 	${CMAKE_SOURCE_DIR}/engine/include
 	${CMAKE_SOURCE_DIR}/deps/motheye/include
 	${CMAKE_SOURCE_DIR}/deps/motheye_platform/include
+	${CMAKE_SOURCE_DIR}/deps/motheye_dx12/include
+	${CMAKE_SOURCE_DIR}/deps/motheye_dx12/deps/DirectXTK12/inc
 )
 
 target_precompile_headers(${PROJECT_NAME} PUBLIC "${CMAKE_SOURCE_DIR}/pch.h")

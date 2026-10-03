@@ -2,7 +2,7 @@
 #include "pch.h"
 
 #include "game/game.h"
-#include "engine/src/engine.h"
+#include "game/input_context.h"
 #include <motheye/platform/window/win32/window.h>
 
 #include <memory>
@@ -22,18 +22,17 @@ namespace app
 
 	private:
 		std::unique_ptr<Window> CreateMainWindow();
+		void OnInputContextChanged(game::InputContext context);
 
 	private:
 		HINSTANCE hInstance_;
 
 		std::unique_ptr<Window> window_;
-		motheye::engine::Engine engine_;
 		game::Game game_;
 	};
 
 	inline App::App(HINSTANCE hInstance) :
-		hInstance_(hInstance),
-		game_(engine_)
+		hInstance_(hInstance)
 	{
 	}
 

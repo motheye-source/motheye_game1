@@ -1,24 +1,23 @@
 #include <motheye/engine/world/transform.h>
 #include <motheye/math/math.h>
 
-
-#define DEGTORAD(a) (((a) * 2.0f * motheye::math::PI) / 360.0f)
+using motheye::math::DegreesToRadians;
 
 namespace motheye::engine::world
 {
 	void Transform::SetRotationFromEuler(DirectX::XMFLOAT4X4& result) const
 	{
 		// Pitch (about right/X axis)
-		float Cp = cosf(DEGTORAD(rx));
-		float Sp = sinf(DEGTORAD(rx));
+		float Cp = cosf(DegreesToRadians(rx));
+		float Sp = sinf(DegreesToRadians(rx));
 
 		// Yaw (about up/Z axis)
-		float Cr = cosf(DEGTORAD(rz));
-		float Sr = sinf(DEGTORAD(rz));
+		float Cr = cosf(DegreesToRadians(rz));
+		float Sr = sinf(DegreesToRadians(rz));
 
 		// Roll (about forward/Y axis)
-		float Cy = cosf(DEGTORAD(ry));
-		float Sy = sinf(DEGTORAD(ry));
+		float Cy = cosf(DegreesToRadians(ry));
+		float Sy = sinf(DegreesToRadians(ry));
 
 		result._11 *= (Cr * Cy);
 		result._12 *= (Sr);

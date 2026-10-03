@@ -1,5 +1,6 @@
 #include "engine.h"
 #include "world/world_loader.h"
+#include <motheye/engine/world/tick_context.h>
 
 using namespace motheye::renderer;
 
@@ -33,12 +34,11 @@ namespace motheye::engine
 
 	void Engine::OnRunFrame()
 	{       
-		const float deltaSeconds = clock_.Tick();
+		world::TickContext tickContext;
+		tickContext.deltaSeconds = clock_.Tick();
+		tickContext.gameContext = game_.ResolveFrameInput(inputHandler_.GetFrameInput(), tickContext.deltaSeconds);
 
-		// TODO:  forward inputState_ to game to resolve actions
-		// game_.Resolve(inputState_, deltaSeconds);
-
-		world_.Stage(*renderer_);
+		world_.Stage(*renderer_, tickContext);
 
 		RenderScene();
 	}

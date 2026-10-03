@@ -62,18 +62,17 @@ namespace motheye::engine::world
         }
     }
 
-    void World::Stage(renderer::Renderer& renderer)
+    void World::Stage(renderer::Renderer& renderer, const TickContext& tickContext)
     {
-        StageNode(renderer, *this->rootNode_);
+        StageNode(renderer, *this->rootNode_, tickContext);
     }
 
-    void World::StageNode(renderer::Renderer& renderer, const Node& node)
+    void World::StageNode(renderer::Renderer& renderer, const Node& node, const TickContext& tickContext)
     {
         const auto instance = entityManager_.GetInstance(node.GetEntityHandle());
         if (instance)
         {
-            TickContext context;
-            instance->GetEntity().Tick(context);
+            instance->GetEntity().Tick(tickContext);
 
             const auto worldMatrix = instance->GetEntity().ComputeWorldMatrix();
 
@@ -108,7 +107,7 @@ namespace motheye::engine::world
         {
             for (const auto& subnode : subnodes)
             {
-                StageNode(renderer, subnode);
+                StageNode(renderer, subnode, tickContext);
             }
         }
     }

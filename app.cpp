@@ -10,14 +10,12 @@ namespace app
     {
         window_ = CreateMainWindow();
    
-        engine_.Start(window_->GetHandle());        
-        game_.Start();
+        game_.Start(window_->GetHandle());
 
         int exitCode = window_->Run(nCmdShow);
 
         game_.Stop();
-        engine_.Stop();
-
+        
         return exitCode;
     }
 
@@ -29,23 +27,23 @@ namespace app
         resourceIds.icon = IDI_SCRIPTENGINE;
         resourceIds.smallIcon = IDI_SMALL;
 
-        return std::make_unique<Window>(hInstance_, resourceIds, this->engine_);
+        return std::make_unique<Window>(hInstance_, resourceIds, this->game_.GetFrameHandler());
     }
 
-    //void App::OnInputContextChanged(InputContext context)
-    //{
-    //   /* engine_.ReleaseActiveHeldInput();
+    void App::OnInputContextChanged(game::InputContext context)
+    {
+        // engine_.OnReleaseInput();
 
-    //    if (context == InputContext::Gameplay)
-    //    {
-    //        window_->SetInputMode(InputMode::Raw);
-    //        window_->HideMouseCursor();
-    //    }
-    //    else
-    //    {
-    //        window_->SetInputMode(InputMode::Legacy);
-    //        window_->CenterMouseCursor();
-    //        window_->ShowMouseCursor();
-    //    }*/
-    //}
+        if (context == game::InputContext::Gameplay)
+        {
+            window_->SetInputMode(InputMode::Raw);
+            window_->HideMouseCursor();
+        }
+        else
+        {
+            window_->SetInputMode(InputMode::Legacy);
+            window_->CenterMouseCursor();
+            window_->ShowMouseCursor();
+        }
+    }
 }

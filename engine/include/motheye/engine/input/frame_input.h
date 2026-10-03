@@ -69,8 +69,8 @@ namespace motheye::engine::input
 		
 	private:
 		const InputDevice& activeDevice_{ InputDevice::MouseKeyboard };
-		const MouseKeyboard& mouseKeyboard_;
-		const Controller& controller_;
+		const MouseKeyboard mouseKeyboard_;
+		const Controller controller_;
 	};
 
 	inline FrameInput::FrameInput(

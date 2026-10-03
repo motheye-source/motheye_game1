@@ -1,5 +1,5 @@
 #pragma once
-
+#include <motheye/engine/world/i_game_context.h>
 #include "input_context.h"
 
 namespace game
@@ -7,7 +7,7 @@ namespace game
 	// Resolved, per-frame snapshot of game actions for a given InputContext.
 	// Produced by the ActionResolver after binding device state against the
 	// current context's binding table.
-	struct ActionFrame
+	struct ActionFrame : public motheye::engine::world::IGameContext
 	{
 		InputContext context = InputContext::Gameplay;
 

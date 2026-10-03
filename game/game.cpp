@@ -1,20 +1,29 @@
 #include "game.h"
 #include "example_model.h"
+
 #include <motheye/model/model.h>
 #include <motheye/blender/compiler.h>
 #include <motheye/compiler/compiler.h>
+#include <motheye/engine/world/i_entity_factory.h>
 
 #include <DirectXMath.h>
 
 namespace game
 {
-	void Game::Start()
+	void Game::Start(HWND hWnd)
 	{
-        this->LoadWorld();
+        engine_.Start(hWnd);
+
+        engine_.RegisterEntityFactory(std::make_unique<EntityFactory>());
+
+        LoadWorld();
+
+        actionResolver_.SetContext(InputContext::Gameplay);
 	}
 
 	void Game::Stop()
 	{
+        engine_.Stop();
 	}
 
 	void Game::LoadWorld()
@@ -28,9 +37,9 @@ namespace game
         auto sourcePath = std::filesystem::path(__FILE__).parent_path();
         auto assetsPath = sourcePath.parent_path().parent_path() / "motheye_assets";
 
-        const WorldSource worldSource{ WorldSource::Example };
+        //const WorldSource worldSource{ WorldSource::Example };
         //const WorldSource worldSource{ WorldSource::Blender };
-        //const WorldSource worldSource{ WorldSource::Map };
+        const WorldSource worldSource{ WorldSource::Map };
 
         std::unique_ptr<Model> model;
 

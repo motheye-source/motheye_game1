@@ -6,6 +6,6 @@ namespace motheye::engine::world
 	struct TickContext
 	{
 		float deltaSeconds;
-		IGameContext* gameContext;
+		const IGameContext* gameContext;
 	};
 }

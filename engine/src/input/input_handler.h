@@ -5,8 +5,8 @@
 #include <motheye/platform/input/mouse_keyboard_event.h>
 #include <motheye/platform/input/controller_event.h>
 
-#include "src/input/controller_handler.h"
-#include "src/input/mouse_keyboard_handler.h"
+#include "engine/src/input/controller_handler.h"
+#include "engine/src/input/mouse_keyboard_handler.h"
 
 namespace motheye::engine::input
 {

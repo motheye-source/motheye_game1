@@ -17,11 +17,13 @@ namespace motheye::engine::world
 	public:
 
 		Entity(const std::string& name, motheye::model::EntityKind kind, const std::string& classname);
+		virtual ~Entity();
 
 		const std::string& GetName() const;
 		model::EntityKind GetKind() const;
 		const std::string& ClassName() const;
 		
+		Transform& GetTransform();
 		const Transform& GetTransform() const;
 
 		DirectX::XMMATRIX ComputeWorldMatrix() const;
@@ -43,6 +45,10 @@ namespace motheye::engine::world
 	{
 	}
 
+	inline Entity::~Entity()
+	{
+	}
+
 	inline const std::string& Entity::GetName() const
 	{
 		return this->name_;
@@ -59,6 +65,11 @@ namespace motheye::engine::world
 	}
 
 	inline const Transform& Entity::GetTransform() const
+	{
+		return transform_;
+	}
+
+	inline Transform& Entity::GetTransform()
 	{
 		return transform_;
 	}
