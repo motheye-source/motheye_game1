@@ -38,7 +38,18 @@ namespace motheye::engine
 		// TODO:  forward inputState_ to game to resolve actions
 		// game_.Resolve(inputState_, deltaSeconds);
 
-		world_.Render(*renderer_);
+		world_.Stage(*renderer_);
+
+		RenderScene();
+	}
+
+	void Engine::RenderScene()
+	{
+		renderer_->GetFrame().SetAmbientLightColor({ 0.3f, 0.3f, 0.3f, 1.0f });
+		renderer_->SetRenderTargetClearColor({ 0.45f, 0.55f, 0.60f, 1.00f });
+		renderer_->BeginRender();
+		renderer_->RenderScene();
+		renderer_->EndRender();
 	}
 
 	void Engine::LoadWorld(const motheye::model::Model& model, const std::filesystem::path& defaultTexture)

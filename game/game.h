@@ -1,7 +1,9 @@
 #pragma once
-#include <motheye/engine/input/input_state.h>
+#include <motheye/engine/input/frame_input.h>
 #include <motheye/engine/i_engine.h>
 #include <motheye/model/model.h>
+
+#include "action_resolver.h"
 
 namespace game
 {
@@ -23,6 +25,7 @@ namespace game
 
 	private:
 		motheye::engine::IEngine& engine_;
+		ActionResolver actionResolver_;
 	};
 
 	inline Game::Game(motheye::engine::IEngine& engine) :

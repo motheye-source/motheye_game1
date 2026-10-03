@@ -23,7 +23,7 @@ namespace motheye::engine::world
             const data::Model& data,
             const std::filesystem::path& defaultTexture);
 
-        void Render(renderer::Renderer& renderer);
+        void Stage(renderer::Renderer& renderer);
 
     private:
         void LoadFrame(renderer::Renderer& renderer);

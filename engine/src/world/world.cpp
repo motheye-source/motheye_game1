@@ -37,19 +37,22 @@ namespace motheye::engine::world
     {
         const auto entity = entityManager_.GetInstance(node.GetEntityHandle());
 
-        switch (entity->GetEntity().GetKind())
+        if (entity)
         {
-        case data::EntityKind::kCamera:
-            renderer.GetFrame().SetCamera(entity->GetInstanceHandle().As<CameraInstanceHandle>());
-            break;
+            switch (entity->GetEntity().GetKind())
+            {
+            case data::EntityKind::kCamera:
+                renderer.GetFrame().SetCamera(entity->GetInstanceHandle().As<CameraInstanceHandle>());
+                break;
 
-        case data::EntityKind::kSolid:
-            renderer.GetFrame().Push(entity->GetInstanceHandle().As<SolidInstanceHandle>());
-            break;
+            case data::EntityKind::kSolid:
+                renderer.GetFrame().Push(entity->GetInstanceHandle().As<SolidInstanceHandle>());
+                break;
 
-        case data::EntityKind::kLight:
-            renderer.GetFrame().Push(entity->GetInstanceHandle().As<LightInstanceHandle>());
-            break;
+            case data::EntityKind::kLight:
+                renderer.GetFrame().Push(entity->GetInstanceHandle().As<LightInstanceHandle>());
+                break;
+            }
         }
 
         const auto& subnodes = node.GetNodes();
@@ -59,16 +62,9 @@ namespace motheye::engine::world
         }
     }
 
-    void World::Render(renderer::Renderer& renderer)
+    void World::Stage(renderer::Renderer& renderer)
     {
         StageNode(renderer, *this->rootNode_);
-
-        renderer.GetFrame().SetAmbientLightColor({ 0.3f, 0.3f, 0.3f, 1.0f });
-
-        renderer.SetRenderTargetClearColor({ 0.45f, 0.55f, 0.60f, 1.00f });
-        renderer.BeginRender();
-        renderer.RenderScene();
-        renderer.EndRender();
     }
 
     void World::StageNode(renderer::Renderer& renderer, const Node& node)
@@ -76,32 +72,44 @@ namespace motheye::engine::world
         const auto instance = entityManager_.GetInstance(node.GetEntityHandle());
         if (instance)
         {
+            TickContext context;
+            instance->GetEntity().Tick(context);
+
             const auto worldMatrix = instance->GetEntity().ComputeWorldMatrix();
 
             switch (instance->GetEntity().GetKind())
             {
-            case motheye::model::EntityKind::kCamera:
-            {
-                const auto camera = instance->GetInstanceHandle().As<renderer::CameraInstanceHandle>();
-                renderer.SetInstanceMatrix(camera, worldMatrix);
-
-                renderer.GetFrame().SetCamera(camera);
-            }
-            break;
-
-            case motheye::model::EntityKind::kSolid:
-                renderer.SetInstanceMatrix(instance->GetInstanceHandle().As<renderer::SolidInstanceHandle>(), worldMatrix);
+                case motheye::model::EntityKind::kCamera:
+                {
+                    const auto camera = instance->GetInstanceHandle().As<renderer::CameraInstanceHandle>();
+                    renderer.SetInstanceMatrix(camera, worldMatrix);
+                    renderer.GetFrame().SetCamera(camera);
+                }
                 break;
-            case motheye::model::EntityKind::kLight:
-                renderer.SetInstanceMatrix(instance->GetInstanceHandle().As<renderer::LightInstanceHandle>(), worldMatrix);
+
+                case motheye::model::EntityKind::kSolid:
+                {
+                    const auto solid = instance->GetInstanceHandle().As<renderer::SolidInstanceHandle>();
+                    renderer.SetInstanceMatrix(solid, worldMatrix);
+                }
+                break;
+           
+                case motheye::model::EntityKind::kLight:
+                {
+                    const auto light = instance->GetInstanceHandle().As<renderer::LightInstanceHandle>();
+                    renderer.SetInstanceMatrix(light, worldMatrix);
+                }
                 break;
             }
         }
 
         const auto& subnodes = node.GetNodes();
-        for (const auto& subnode : subnodes)
+        if (!subnodes.empty())
         {
-            StageNode(renderer, subnode);
+            for (const auto& subnode : subnodes)
+            {
+                StageNode(renderer, subnode);
+            }
         }
     }
 

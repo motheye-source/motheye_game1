@@ -160,6 +160,9 @@ namespace motheye::engine::world
                 instance = renderer_.CreateInstance(resource.As<LightResourceHandle>());
                 break;
 
+            case data::EntityKind::kEmpty:
+                break;
+
             default:
                 continue;
             }

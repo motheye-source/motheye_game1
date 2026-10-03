@@ -2,10 +2,16 @@ cmake_minimum_required(VERSION 3.28)
 project("game")
 
 add_library(${PROJECT_NAME} STATIC
+	"action_frame.h"
+	"action_resolver.h"
+	"controller_binder.h"
+	"example_model.h"
+	"fps_camera.cpp"
+	"fps_camera.h"
 	"game.cpp"
 	"game.h"
-
-	"example_model.h"
+	"input_context.h"
+	"mouse_keyboard_binder.h"
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES

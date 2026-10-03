@@ -5,12 +5,12 @@
 #include <motheye/platform/input/controller_event.h>
 
 #include <motheye/engine/i_engine.h>
-#include <motheye/engine/input/input_state.h>
 #include <motheye/model/model.h>
 
 #include "renderer/renderer.h"
 
 #include "clock_source.h"
+#include "src/input/input_handler.h"
 #include "src/world/entity_manager.h"
 #include "src/world/world.h"
 
@@ -45,10 +45,11 @@ namespace motheye::engine
 
 	private:
 		void InitRenderer(HWND hWnd);
+		void RenderScene();
 
 	private:
 		ClockSource clock_;
-		input::InputState inputState_;
+		input::InputHandler inputHandler_;
 		
 		std::unique_ptr<motheye::dx12::DXGIAdapter> adapter_;
 		std::unique_ptr<renderer::Renderer> renderer_;
@@ -58,22 +59,22 @@ namespace motheye::engine
 	
 	inline void Engine::OnInitFrame()
 	{
-		inputState_.BeginFrame();
+		inputHandler_.BeginFrame();
 	}
 
 	inline void Engine::OnMouseKeyboardEvent(const input::MouseKeyboardEvent& event)
 	{
-		inputState_.ApplyMouseKeyboardEvent(event);
+		inputHandler_.ApplyMouseKeyboardEvent(event);
 	}
 
 	inline void Engine::OnControllerEvent(const input::ControllerEvent& event)
 	{
-		inputState_.ApplyControllerEvent(event);
+		inputHandler_.ApplyControllerEvent(event);
 	}
 
 	inline void Engine::OnReleaseInput()
 	{
-		inputState_.ReleaseActiveHeldInput();
+		inputHandler_.ReleaseActiveHeldInput();
 
 		// TODO: How to notify App so that input mode can be switched to legacy if needed?
 	}

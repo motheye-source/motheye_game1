@@ -1,6 +1,7 @@
 #pragma once
 #include <motheye/model/model.h>
 #include "transform.h"
+#include "tick_context.h"
 
 #include <string>
 
@@ -26,7 +27,7 @@ namespace motheye::engine::world
 		DirectX::XMMATRIX ComputeWorldMatrix() const;
 
 		virtual void Initialize();
-		virtual void Tick();
+		virtual void Tick(const TickContext& context);
 
 	private:
 		const std::string name_;
@@ -73,7 +74,8 @@ namespace motheye::engine::world
 	{
 	}
 
-	inline void Entity::Tick()
+	inline void Entity::Tick(const TickContext& context)
 	{
+		(void)context;
 	}
 }

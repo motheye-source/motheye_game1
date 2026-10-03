@@ -28,9 +28,9 @@ namespace game
         auto sourcePath = std::filesystem::path(__FILE__).parent_path();
         auto assetsPath = sourcePath.parent_path().parent_path() / "motheye_assets";
 
-        //const WorldSource worldSource{ WorldSource::Example };
+        const WorldSource worldSource{ WorldSource::Example };
         //const WorldSource worldSource{ WorldSource::Blender };
-        const WorldSource worldSource{ WorldSource::Map };
+        //const WorldSource worldSource{ WorldSource::Map };
 
         std::unique_ptr<Model> model;
 

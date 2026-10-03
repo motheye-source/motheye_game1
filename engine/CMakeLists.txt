@@ -2,18 +2,26 @@ cmake_minimum_required(VERSION 3.28)
 project("engine")
 
 add_library(${PROJECT_NAME} STATIC
-	"include/motheye/engine/input/input_device.h"
 	"include/motheye/engine/input/controller_state.h"
+	"include/motheye/engine/input/frame_input.h"
+	"include/motheye/engine/input/input_device.h"
 	"include/motheye/engine/input/mouse_keyboard_state.h"
-	"include/motheye/engine/input/input_state.h"
 
 	"include/motheye/engine/world/entity.h"
 	"include/motheye/engine/world/i_entity_factory.h"
+	"include/motheye/engine/world/i_game_context.h"
+	"include/motheye/engine/world/tick_context.h"
 	"include/motheye/engine/world/transform.h"
 	
 	"src/engine.h"
 	"src/engine.cpp"
 	"src/clock_source.h"
+
+	"src/input/controller_handler.h"
+	"src/input/input_handler.h"
+	"src/input/input_handler.cpp"
+	"src/input/mouse_keyboard_handler.h"
+	"src/input/mouse_keyboard_handler.cpp"
 
 	"src/world/axes_geometry.h"
 	"src/world/entity_manager.h"
